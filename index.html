@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1110">
+  <title>Face Security</title>
+  <link rel="stylesheet" href="detector.css">
+</head>
+<body>
+  <main class="phone" aria-label="Face Security">
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="clock">
+          <time class="clock-time" id="clockTime">--:--:--</time>
+          <time class="clock-date" id="clockDate">Loading date…</time>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" id="menuButton" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainMenu" title="Menu">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-button" id="helpButton" aria-label="Help" title="Help">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M9.8 9.3a2.3 2.3 0 1 1 3.8 1.7c-1 .9-1.6 1.2-1.6 2.5M12 16.8h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </button>
+        <nav class="menu-panel" id="mainMenu" aria-label="Main menu" hidden>
+          <button class="menu-item" id="registerButton" type="button">Register User</button>
+          <button class="menu-item" id="activityButton" type="button">Login Activity</button>
+        </nav>
+      </div>
+    </header>
+
+    <dialog class="activity-dialog registration-dialog" id="registrationDialog" aria-labelledby="registrationTitle">
+      <div class="dialog-heading">
+        <h1 id="registrationTitle">Register User</h1>
+        <button class="icon-button dialog-close" id="closeRegistrationButton" type="button" aria-label="Close registration form">×</button>
+      </div>
+      <p class="registration-note">Demo form only. No account will be created and no information will be saved.</p>
+      <form class="registration-form" id="registrationForm">
+        <section class="registration-scanner" id="registrationScanner" data-scan-state="idle" aria-label="Registration face scan">
+          <div class="registration-scan-copy">
+            <strong id="registrationScanStatus" role="status" aria-live="polite">Start scanning when ready</strong>
+            <p>Face the camera to calibrate, then turn your head LEFT and RIGHT, tilt DOWN, and look UP as instructed. No face image or biometric data is saved.</p>
+          </div>
+          <button class="scan-inline-button" id="registrationScanButton" type="button">Start scanning</button>
+        </section>
+
+        <label for="registerName">Full name</label>
+        <input id="registerName" name="name" type="text" autocomplete="name" required>
+
+        <label for="registerEmail">Email address</label>
+        <input id="registerEmail" name="email" type="email" autocomplete="email" required>
+
+        <button class="primary-button registration-submit" type="submit">Review registration</button>
+      </form>
+    </dialog>
+
+    <dialog class="activity-dialog" id="activityDialog" aria-labelledby="activityTitle">
+      <div class="dialog-heading">
+        <h1 id="activityTitle">Login Activity</h1>
+        <button class="icon-button dialog-close" id="closeActivityButton" type="button" aria-label="Close login activity">×</button>
+      </div>
+      <div class="activity-empty">
+        <div class="activity-empty-icon" aria-hidden="true">↗</div>
+        <h2>No login activity yet</h2>
+        <p>Login tracking is not available because this app does not have a login feature yet.</p>
+      </div>
+    </dialog>
+
+    <section class="camera-card" id="cameraCard" aria-label="Camera preview">
+      <video class="camera-video" id="cameraVideo" autoplay muted playsinline></video>
+      <div class="camera-shade"></div>
+      <div class="placeholder" aria-hidden="true">
+        <div class="silhouette"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div>
+      </div>
+      <div class="face-box" aria-hidden="true">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="scan-line"></div>
+      </div>
+      <div class="registration-scan-indicator" id="registrationScanIndicator" role="status" aria-live="polite" hidden></div>
+      <div class="registration-capture-overlay" id="registrationCaptureOverlay" hidden>
+        <strong>✓ Done</strong>
+        <button class="continue-registration-button" id="continueRegistrationButton" type="button">Continue registration</button>
+      </div>
+    </section>
+
+    <section class="scan-status" id="scanStatus" data-state="starting">
+      <div class="status-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 19 6v5.5c0 4.3-2.9 7.7-7 9.5-4.1-1.8-7-5.2-7-9.5V6l7-3Z" stroke="currentColor" stroke-width="1.6"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="status-copy">
+        <div class="status-title" id="statusTitle" aria-live="polite" aria-atomic="true">Preparing camera</div>
+        <div class="status-detail" id="statusDetail">Allow camera access to begin.</div>
+      </div>
+      <div class="status-count" id="faceCount" aria-label="Face count" aria-live="polite">—</div>
+    </section> 
+
+    <button class="primary-button" id="scanButton" type="button" aria-label="Connecting to camera" disabled>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3m8 0h3a1 1 0 0 1 1 1v3m0 8v3a1 1 0 0 1-1 1h-3m-8 0H5a1 1 0 0 1-1-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+      <span id="buttonText">Connecting…</span>
+    </button>
+    <p class="privacy-note">🔒 Video is processed on this device and never uploaded.</p>
+  </main>
+  <script src="detector.js"></script>
+</body>
+</html>
